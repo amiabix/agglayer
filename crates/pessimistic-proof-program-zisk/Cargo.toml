@@ -1,0 +1,28 @@
+[package]
+name = "pessimistic-proof-program-zisk"
+version = "0.1.0"
+edition = "2021"
+license = "MIT OR Apache-2.0"
+
+[workspace]
+
+[dependencies]
+agglayer-primitives = { version = "0.18.0", features = ["zisk"] }
+pessimistic-proof-core = { path = "../pessimistic-proof-core", default-features = false, features = ["zisk"] }
+ziskos = "=1.2.0-alpha"
+
+[dev-dependencies]
+agglayer-types = { path = "../agglayer-types" }
+ecdsa-proof-lib = { path = "../pessimistic-proof-test-suite/aggchain-proof-ecdsa-example/lib" }
+pessimistic-proof = { path = "../pessimistic-proof" }
+pessimistic-proof-test-suite = { path = "../pessimistic-proof-test-suite" }
+zisk-sdk = "=1.2.0-alpha"
+
+[patch.crates-io]
+agglayer-primitives = { path = "../../vendor/agglayer-primitives" }
+
+[profile.release]
+panic = "abort"
+lto = "fat"
+codegen-units = 1
+overflow-checks = true
