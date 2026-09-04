@@ -19,7 +19,7 @@ use pessimistic_proof_test_suite::{
     runner::Runner,
     sample_data::{ETH, USDC},
 };
-use zisk_sdk::{GuestProgram, ProofKind, ProverClient, ZiskHints, ZiskStdin};
+use zisk_sdk::{AsmOptions, GuestProgram, ProofKind, ProverClient, ZiskHints, ZiskStdin};
 
 const ZISK_PP_ELF: &str = concat!(
     env!("CARGO_MANIFEST_DIR"),
@@ -188,7 +188,11 @@ fn generate_and_verify_recursive_zisk_proof() {
 
     let aggchain_program = GuestProgram::from_uri(ZISK_AGGCHAIN_ELF).unwrap();
     let pp_program = GuestProgram::from_uri(ZISK_PP_ELF).unwrap();
-    let mut builder = ProverClient::embedded().assembly().gpu();
+    let mut builder = ProverClient::embedded()
+        .assembly()
+        .plonk()
+        .asm_options(AsmOptions::default().unlock_mapped_memory())
+        .gpu();
     if let Ok(proving_key) = std::env::var("ZISK_PROVING_KEY") {
         builder = builder.proving_key(proving_key);
     }
@@ -274,10 +278,7 @@ fn generate_and_verify_recursive_zisk_proof() {
     } else {
         prove
     };
-    let pp_result = prove
-        .wrap(ProofKind::VadcopFinalMinimal)
-        .run_sync()
-        .unwrap();
+    let pp_result = prove.wrap(ProofKind::Plonk).run_sync().unwrap();
     let proof = pp_result.get_proof();
     proof
         .with_program_vk(&pp_program.vk().unwrap())
