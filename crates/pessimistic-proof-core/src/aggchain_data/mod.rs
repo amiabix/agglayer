@@ -26,6 +26,9 @@ mod aggchain_hash;
 mod aggchain_proof;
 mod multisig;
 
+#[cfg(feature = "zisk-sp1")]
+pub mod sp1;
+
 pub type Vkey = [u32; 8];
 
 /// Chain proof which include either multisig, aggchain proof, or both.

@@ -1,0 +1,20 @@
+[package]
+name = "aggchain-proof-ecdsa-program-zisk"
+version = "0.1.0"
+edition = "2021"
+
+[workspace]
+
+[dependencies]
+agglayer-primitives = { version = "0.18.0", features = ["keccak", "zisk"] }
+ecdsa-proof-lib = { path = "../lib" }
+ziskos = "=1.2.0-alpha"
+
+[patch.crates-io]
+agglayer-primitives = { path = "../../../../vendor/agglayer-primitives" }
+
+[profile.release]
+panic = "abort"
+lto = "fat"
+codegen-units = 1
+overflow-checks = true

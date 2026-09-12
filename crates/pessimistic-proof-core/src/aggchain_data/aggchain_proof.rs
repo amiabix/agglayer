@@ -16,7 +16,7 @@ pub struct AggchainProof {
 }
 
 impl AggchainProof {
-    /// Verifies the next proof in the sp1 buffer.
+    /// Verifies the next recursive proof supplied by the active zkVM.
     pub fn verify_aggchain_proof(&self, constrained_values: &ConstrainedValues) {
         let _aggchain_proof_public_values = AggchainProofPublicValues {
             prev_local_exit_root: constrained_values.initial_state_commitment.exit_root.into(),
@@ -29,7 +29,7 @@ impl AggchainProof {
                 .commitment(IMPORTED_BRIDGE_EXIT_COMMITMENT_VERSION),
         };
 
-        #[cfg(target_os = "zkvm")]
+        #[cfg(all(target_os = "zkvm", feature = "sp1"))]
         {
             // Panic upon invalid proof.
             sp1_zkvm::lib::verify::verify_sp1_proof(
@@ -37,5 +37,98 @@ impl AggchainProof {
                 &_aggchain_proof_public_values.hash(),
             );
         }
+
+        #[cfg(all(target_os = "zkvm", feature = "zisk", not(feature = "zisk-sp1")))]
+        {
+            let proof = ziskos::io::read_slice();
+            assert!(verify_zisk_aggchain_proof(
+                proof,
+                &self.aggchain_vkey,
+                &_aggchain_proof_public_values.hash(),
+            ));
+        }
+
+        #[cfg(all(any(target_os = "zkvm", zisk_hints), feature = "zisk-sp1"))]
+        {
+            super::sp1::verify_sp1_aggchain_proof(
+                &ziskos::io::read_slice(),
+                &self.aggchain_vkey,
+                &_aggchain_proof_public_values.hash(),
+            )
+            .expect("invalid SP1 aggchain proof");
+        }
     }
+}
+
+// A native `zisk-sp1` build compiles the SP1 verification out. Fail the build unless
+// the caller opts in explicitly, so a host-side test cannot pass with no proof at all.
+#[cfg(all(
+    feature = "zisk-sp1",
+    not(any(target_os = "zkvm", zisk_hints, feature = "zisk-sp1-unverified-host"))
+))]
+compile_error!(
+    "zisk-sp1 on a host target skips SP1 verification; enable `zisk-sp1-unverified-host` to acknowledge this, or build with --cfg zisk_hints to verify natively"
+);
+
+#[cfg(all(target_os = "zkvm", feature = "zisk", not(feature = "zisk-sp1")))]
+fn verify_zisk_aggchain_proof(
+    proof: &[u8],
+    expected_program_vk: &Vkey,
+    expected_public_values_hash: &[u8; 32],
+) -> bool {
+    const HEADER_WORDS: usize = 2;
+    const PROGRAM_VK_WORDS: usize = 4;
+    const USER_PUBLIC_WORDS: usize = 64;
+    const PUBLIC_WORDS: usize = PROGRAM_VK_WORDS + USER_PUBLIC_WORDS;
+    const TRUSTED_VADCOP_VK: &[u8; 32] =
+        include_bytes!(concat!(env!("OUT_DIR"), "/zisk_vadcop_vk.bin"));
+
+    if proof.len() % 8 != 0 {
+        return false;
+    }
+
+    let word = |index: usize| {
+        proof
+            .get(index * 8..(index + 1) * 8)
+            .map(|bytes| u64::from_le_bytes(bytes.try_into().unwrap()))
+    };
+
+    let proof_words = proof.len() / 8;
+    if word(0) != Some(1)
+        || word(1) != Some(PUBLIC_WORDS as u64)
+        || proof_words < HEADER_WORDS + PUBLIC_WORDS + TRUSTED_VADCOP_VK.len() / 8
+        || proof.get(proof.len() - TRUSTED_VADCOP_VK.len()..)
+            != Some(TRUSTED_VADCOP_VK.as_slice())
+    {
+        return false;
+    }
+
+    let mut actual_program_vk = [0u32; 8];
+    for limb_index in 0..PROGRAM_VK_WORDS {
+        let Some(limb) = word(HEADER_WORDS + limb_index) else {
+            return false;
+        };
+        let bytes = limb.to_be_bytes();
+        actual_program_vk[limb_index * 2] = u32::from_be_bytes(bytes[..4].try_into().unwrap());
+        actual_program_vk[limb_index * 2 + 1] =
+            u32::from_be_bytes(bytes[4..].try_into().unwrap());
+    }
+    if &actual_program_vk != expected_program_vk {
+        return false;
+    }
+
+    let public_values_offset = HEADER_WORDS + PROGRAM_VK_WORDS;
+    let mut actual_public_values_hash = [0u8; 32];
+    for index in 0..8 {
+        let Some(value) = word(public_values_offset + index) else {
+            return false;
+        };
+        actual_public_values_hash[index * 4..(index + 1) * 4]
+            .copy_from_slice(&(value as u32).to_le_bytes());
+    }
+    if &actual_public_values_hash != expected_public_values_hash {
+        return false;
+    }
+
+    unsafe { ziskos::zisklib::verify_zisk_proof_c(proof.as_ptr(), proof.len()) }
 }

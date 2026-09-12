@@ -4,7 +4,11 @@ default-members = ["crates/agglayer"]
 members = ["crates/*", "tests/integrations"]
 exclude = [
     "crates/pessimistic-proof-program",
+    "crates/pessimistic-proof-program-zisk",
     "crates/pessimistic-proof-test-suite/aggchain-proof-ecdsa-example/program/",
+    "vendor/sp1-primitives",
+    "vendor/sp1-recursion-machine",
+    "vendor/slop-koala-bear",
 ]
 
 [workspace.package]

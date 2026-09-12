@@ -1,5 +1,5 @@
-use agglayer_primitives::{Address, Digest, Signature};
-use alloy_primitives::{keccak256, B256, U256};
+use agglayer_primitives::{keccak::keccak256, Address, Digest, Signature};
+use alloy_primitives::{B256, U256};
 use serde::{Deserialize, Serialize};
 use thiserror::Error;
 
@@ -54,7 +54,7 @@ impl MultiSignature {
             buf.extend_from_slice(&a.into_array());
         }
 
-        keccak256(&buf).into()
+        keccak256(&buf)
     }
 
     /// Verify signatures and ensure they are all from the expected set.
