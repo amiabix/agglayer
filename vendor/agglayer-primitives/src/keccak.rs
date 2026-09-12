@@ -8,6 +8,10 @@ use crate::Digest;
 pub fn keccak256(data: &[u8]) -> Digest {
     #[cfg(feature = "zisk")]
     {
+        #[cfg(zisk_hints)]
+        unsafe {
+            ziskos::hints::hint_keccak256(data.as_ptr(), data.len());
+        }
         return Digest(ziskos::zisklib::lib::keccak256(data));
     }
 
@@ -37,6 +41,9 @@ where
             buf.extend_from_slice(item.as_ref());
             buf
         });
+        #[cfg(zisk_hints)]
+        return keccak256(&data);
+        #[cfg(not(zisk_hints))]
         return Digest(ziskos::zisklib::lib::keccak256(&data));
     }
 

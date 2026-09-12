@@ -6412,12 +6412,17 @@ dependencies = [
  "agglayer-tries",
  "alloy-primitives",
  "arbitrary",
+ "bincode 1.3.3",
  "hex",
  "hex-literal",
  "rand 0.9.3",
  "semver 1.0.27",
  "serde",
  "serde_with",
+ "slop-algebra",
+ "sp1-primitives 6.2.2",
+ "sp1-recursion-executor",
+ "sp1-verifier 6.2.2",
  "sp1-zkvm",
  "thiserror 2.0.18",
  "toml 1.0.6+spec-1.1.0",
@@ -6432,10 +6437,15 @@ version = "0.1.0"
 dependencies = [
  "agglayer-primitives",
  "agglayer-types",
+ "bincode 1.3.3",
  "ecdsa-proof-lib",
  "pessimistic-proof",
  "pessimistic-proof-core",
  "pessimistic-proof-test-suite",
+ "slop-algebra",
+ "sp1-primitives 6.2.2",
+ "sp1-recursion-executor",
+ "sp1-sdk 6.2.2",
  "zisk-sdk",
  "ziskos",
 ]
@@ -8791,8 +8801,6 @@ dependencies = [
 [[package]]
 name = "slop-koala-bear"
 version = "6.2.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0a8cdc74f04d13e738b4628312b16dfec6a2e547bde697c8bdcf556884c6e91f"
 dependencies = [
  "lazy_static",
  "p3-koala-bear",
@@ -8801,6 +8809,7 @@ dependencies = [
  "slop-challenger",
  "slop-poseidon2",
  "slop-symmetric",
+ "ziskos",
 ]
 
 [[package]]
@@ -9498,8 +9507,6 @@ dependencies = [
 [[package]]
 name = "sp1-primitives"
 version = "6.2.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "13ad00052921b993af682403b378c8fe23c40382f9790f093c8fac0f30433c5e"
 dependencies = [
  "bincode 1.3.3",
  "blake3",
@@ -9901,8 +9908,6 @@ dependencies = [
 [[package]]
 name = "sp1-recursion-machine"
 version = "6.2.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d741527465de17de5c3ef4f9465e77117d2a15599398f97e8fb0cf8c3e57b2f4"
 dependencies = [
  "itertools 0.14.0",
  "rand 0.8.6",
@@ -12554,6 +12559,11 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c1bc6041f337ea1540da88363df1c7bddfadf0e9e9433faee038aa15fa374126"
 
 [[package]]
+name = "zisk-circuit"
+version = "1.2.0-alpha"
+source = "git+https://github.com/amiabix/zisk?branch=feat%2Fkoala-poseidon2-precompile#d1e95fb81b3fb11a12532a3ed8c1d251138b22f5"
+
+[[package]]
 name = "zisk-cluster-common"
 version = "1.2.0-alpha"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -12597,9 +12607,9 @@ dependencies = [
  "tikv-jemallocator",
  "tracing",
  "zisk-core",
- "zisk-definitions",
- "zisk-stream",
- "zisk-verifier",
+ "zisk-definitions 1.2.0-alpha (registry+https://github.com/rust-lang/crates.io-index)",
+ "zisk-stream 1.2.0-alpha (registry+https://github.com/rust-lang/crates.io-index)",
+ "zisk-verifier 1.2.0-alpha (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
@@ -12647,8 +12657,8 @@ dependencies = [
  "rayon",
  "sha2 0.10.9",
  "tiny-keccak",
- "zisk-definitions",
- "zisk-precomp-helpers",
+ "zisk-definitions 1.2.0-alpha (registry+https://github.com/rust-lang/crates.io-index)",
+ "zisk-precomp-helpers 1.2.0-alpha (registry+https://github.com/rust-lang/crates.io-index)",
  "ziskos",
 ]
 
@@ -12657,6 +12667,11 @@ name = "zisk-definitions"
 version = "1.2.0-alpha"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d7d1a44ad1d2ce15db39bfff3dfe4d5dd4736962c7badbd089f1f292d9347879"
+
+[[package]]
+name = "zisk-definitions"
+version = "1.2.0-alpha"
+source = "git+https://github.com/amiabix/zisk?branch=feat%2Fkoala-poseidon2-precompile#d1e95fb81b3fb11a12532a3ed8c1d251138b22f5"
 
 [[package]]
 name = "zisk-executor"
@@ -12709,6 +12724,11 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "0238eb80fe6909d395453dba79ca27587c2ea34a87ba9f98efc55f94bde12eb0"
 
 [[package]]
+name = "zisk-lib-c"
+version = "1.2.0-alpha"
+source = "git+https://github.com/amiabix/zisk?branch=feat%2Fkoala-poseidon2-precompile#d1e95fb81b3fb11a12532a3ed8c1d251138b22f5"
+
+[[package]]
 name = "zisk-pil"
 version = "1.2.0-alpha"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -12746,10 +12766,10 @@ dependencies = [
  "tracing",
  "zisk-common",
  "zisk-core",
- "zisk-lib-c",
+ "zisk-lib-c 1.2.0-alpha (registry+https://github.com/rust-lang/crates.io-index)",
  "zisk-pil",
  "zisk-precomp-common",
- "zisk-precomp-helpers",
+ "zisk-precomp-helpers 1.2.0-alpha (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
@@ -12776,7 +12796,7 @@ dependencies = [
  "zisk-pil",
  "zisk-precomp-arith-eq",
  "zisk-precomp-common",
- "zisk-precomp-helpers",
+ "zisk-precomp-helpers 1.2.0-alpha (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
@@ -12793,7 +12813,7 @@ dependencies = [
  "tracing",
  "zisk-common",
  "zisk-core",
- "zisk-lib-c",
+ "zisk-lib-c 1.2.0-alpha (registry+https://github.com/rust-lang/crates.io-index)",
  "zisk-pil",
  "zisk-precomp-common",
 ]
@@ -12845,7 +12865,7 @@ dependencies = [
  "zisk-core",
  "zisk-pil",
  "zisk-precomp-common",
- "zisk-precomp-helpers",
+ "zisk-precomp-helpers 1.2.0-alpha (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
@@ -12862,7 +12882,7 @@ dependencies = [
  "zisk-core",
  "zisk-pil",
  "zisk-precomp-common",
- "zisk-precomp-helpers",
+ "zisk-precomp-helpers 1.2.0-alpha (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
@@ -12880,8 +12900,26 @@ dependencies = [
  "crunchy",
  "num-bigint 0.4.6",
  "num-traits",
- "zisk-circuit",
- "zisk-lib-c",
+ "zisk-circuit 1.2.0-alpha (registry+https://github.com/rust-lang/crates.io-index)",
+ "zisk-lib-c 1.2.0-alpha (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
+name = "zisk-precomp-helpers"
+version = "1.2.0-alpha"
+source = "git+https://github.com/amiabix/zisk?branch=feat%2Fkoala-poseidon2-precompile#d1e95fb81b3fb11a12532a3ed8c1d251138b22f5"
+dependencies = [
+ "ark-bls12-381",
+ "ark-bn254",
+ "ark-ff 0.5.0",
+ "ark-secp256k1",
+ "ark-secp256r1",
+ "cfg-if",
+ "crunchy",
+ "num-bigint 0.4.6",
+ "num-traits",
+ "zisk-circuit 1.2.0-alpha (git+https://github.com/amiabix/zisk?branch=feat%2Fkoala-poseidon2-precompile)",
+ "zisk-lib-c 1.2.0-alpha (git+https://github.com/amiabix/zisk?branch=feat%2Fkoala-poseidon2-precompile)",
 ]
 
 [[package]]
@@ -12917,7 +12955,7 @@ dependencies = [
  "zisk-core",
  "zisk-pil",
  "zisk-precomp-common",
- "zisk-precomp-helpers",
+ "zisk-precomp-helpers 1.2.0-alpha (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
@@ -13020,7 +13058,7 @@ dependencies = [
  "tera",
  "thiserror 2.0.18",
  "tracing",
- "zisk-verifier",
+ "zisk-verifier 1.2.0-alpha (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
@@ -13030,7 +13068,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ffed49cfa7c99135c21b0bfd08ea412d240d0da416f94a8e02dc3c25418e7705"
 dependencies = [
  "zisk-core",
- "zisk-definitions",
+ "zisk-definitions 1.2.0-alpha (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
@@ -13228,6 +13266,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "zisk-stream"
+version = "1.2.0-alpha"
+source = "git+https://github.com/amiabix/zisk?branch=feat%2Fkoala-poseidon2-precompile#d1e95fb81b3fb11a12532a3ed8c1d251138b22f5"
+dependencies = [
+ "libc",
+ "thiserror 2.0.18",
+ "tracing",
+]
+
+[[package]]
 name = "zisk-transpiler-common"
 version = "1.2.0-alpha"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -13258,10 +13306,26 @@ dependencies = [
 ]
 
 [[package]]
+name = "zisk-verifier"
+version = "1.2.0-alpha"
+source = "git+https://github.com/amiabix/zisk?branch=feat%2Fkoala-poseidon2-precompile#d1e95fb81b3fb11a12532a3ed8c1d251138b22f5"
+dependencies = [
+ "proofman-verifier",
+]
+
+[[package]]
 name = "zisk-zkvm-interface"
 version = "1.2.0-alpha"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9eb81c441a0ce460f430facfb1a31e54f4a949c35468cf04d9577c86be8146e3"
+dependencies = [
+ "bindgen 0.72.1",
+]
+
+[[package]]
+name = "zisk-zkvm-interface"
+version = "1.2.0-alpha"
+source = "git+https://github.com/amiabix/zisk?branch=feat%2Fkoala-poseidon2-precompile#d1e95fb81b3fb11a12532a3ed8c1d251138b22f5"
 dependencies = [
  "bindgen 0.72.1",
 ]
@@ -13287,7 +13351,7 @@ dependencies = [
  "vergen-git2",
  "zisk-common",
  "zisk-core",
- "zisk-definitions",
+ "zisk-definitions 1.2.0-alpha (registry+https://github.com/rust-lang/crates.io-index)",
  "zisk-pil",
  "zisk-riscv",
  "zisk-sm-arith",
@@ -13299,8 +13363,7 @@ dependencies = [
 [[package]]
 name = "ziskos"
 version = "1.2.0-alpha"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "08a9eee9ae285d36dd52ab8322e4e870ec2c07f8befca02813554e907c43e3ea"
+source = "git+https://github.com/amiabix/zisk?branch=feat%2Fkoala-poseidon2-precompile#d1e95fb81b3fb11a12532a3ed8c1d251138b22f5"
 dependencies = [
  "anyhow",
  "ark-bn254",
@@ -13329,12 +13392,12 @@ dependencies = [
  "sha2 0.10.9",
  "tiny-keccak",
  "tokio",
- "zisk-definitions",
- "zisk-lib-c",
- "zisk-precomp-helpers",
- "zisk-stream",
- "zisk-verifier",
- "zisk-zkvm-interface",
+ "zisk-definitions 1.2.0-alpha (git+https://github.com/amiabix/zisk?branch=feat%2Fkoala-poseidon2-precompile)",
+ "zisk-lib-c 1.2.0-alpha (git+https://github.com/amiabix/zisk?branch=feat%2Fkoala-poseidon2-precompile)",
+ "zisk-precomp-helpers 1.2.0-alpha (git+https://github.com/amiabix/zisk?branch=feat%2Fkoala-poseidon2-precompile)",
+ "zisk-stream 1.2.0-alpha (git+https://github.com/amiabix/zisk?branch=feat%2Fkoala-poseidon2-precompile)",
+ "zisk-verifier 1.2.0-alpha (git+https://github.com/amiabix/zisk?branch=feat%2Fkoala-poseidon2-precompile)",
+ "zisk-zkvm-interface 1.2.0-alpha (git+https://github.com/amiabix/zisk?branch=feat%2Fkoala-poseidon2-precompile)",
 ]
 
 [[package]]
@@ -13358,11 +13421,11 @@ dependencies = [
  "serde",
  "sha2 0.10.9",
  "tiny-keccak",
- "zisk-definitions",
- "zisk-lib-c",
- "zisk-precomp-helpers",
- "zisk-verifier",
- "zisk-zkvm-interface",
+ "zisk-definitions 1.2.0-alpha (registry+https://github.com/rust-lang/crates.io-index)",
+ "zisk-lib-c 1.2.0-alpha (registry+https://github.com/rust-lang/crates.io-index)",
+ "zisk-precomp-helpers 1.2.0-alpha (registry+https://github.com/rust-lang/crates.io-index)",
+ "zisk-verifier 1.2.0-alpha (registry+https://github.com/rust-lang/crates.io-index)",
+ "zisk-zkvm-interface 1.2.0-alpha (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]

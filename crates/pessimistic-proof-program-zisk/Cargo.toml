@@ -6,20 +6,39 @@ license = "MIT OR Apache-2.0"
 
 [workspace]
 
+[features]
+sp1-aggchain = ["pessimistic-proof-core/zisk-sp1", "dep:sp1-primitives"]
+
+[[test]]
+name = "sp1_aggchain"
+required-features = ["sp1-aggchain"]
+
 [dependencies]
 agglayer-primitives = { version = "0.18.0", features = ["zisk"] }
 pessimistic-proof-core = { path = "../pessimistic-proof-core", default-features = false, features = ["zisk"] }
 ziskos = "=1.2.0-alpha"
+sp1-primitives = { version = "=6.2.2", optional = true, features = ["zisk-precompile"] }
 
 [dev-dependencies]
 agglayer-types = { path = "../agglayer-types" }
+# Host tests compute expected outputs natively without a proof; the guest build never sees this.
+pessimistic-proof-core = { path = "../pessimistic-proof-core", default-features = false, features = ["zisk", "zisk-sp1-unverified-host"] }
+bincode = "1.3.3"
 ecdsa-proof-lib = { path = "../pessimistic-proof-test-suite/aggchain-proof-ecdsa-example/lib" }
 pessimistic-proof = { path = "../pessimistic-proof" }
 pessimistic-proof-test-suite = { path = "../pessimistic-proof-test-suite" }
+sp1-sdk = { version = "=6.2.2", features = ["blocking"] }
+slop-algebra = "=6.2.2"
+sp1-primitives = "=6.2.2"
+sp1-recursion-executor = "=6.2.2"
 zisk-sdk = "=1.2.0-alpha"
 
 [patch.crates-io]
 agglayer-primitives = { path = "../../vendor/agglayer-primitives" }
+slop-koala-bear = { path = "../../vendor/slop-koala-bear" }
+sp1-primitives = { path = "../../vendor/sp1-primitives" }
+sp1-recursion-machine = { path = "../../vendor/sp1-recursion-machine" }
+ziskos = { git = "https://github.com/amiabix/zisk", branch = "feat/koala-poseidon2-precompile" }
 
 [profile.release]
 panic = "abort"

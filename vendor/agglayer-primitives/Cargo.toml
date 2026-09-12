@@ -94,4 +94,5 @@ priority = 0
 check-cfg = [
     'cfg(feature, values("cargo-clippy"))',
     "cfg(fuzzing)",
+    "cfg(zisk_hints)",
 ]

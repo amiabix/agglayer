@@ -7,6 +7,7 @@ use semver::Version;
 use toml::Value;
 
 fn main() {
+    println!("cargo:rustc-check-cfg=cfg(zisk_hints)");
     generate_program_version();
     configure_zisk_vadcop_key();
 }
@@ -41,7 +42,9 @@ fn generate_program_version() {
 fn configure_zisk_vadcop_key() {
     println!("cargo:rerun-if-env-changed=ZISK_VADCOP_VK_PATH");
 
-    if env::var_os("CARGO_FEATURE_ZISK").is_none() {
+    if env::var_os("CARGO_FEATURE_ZISK").is_none()
+        || env::var_os("CARGO_FEATURE_ZISK_SP1").is_some()
+    {
         return;
     }
 

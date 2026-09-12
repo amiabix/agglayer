@@ -38,7 +38,7 @@ impl AggchainProof {
             );
         }
 
-        #[cfg(all(target_os = "zkvm", feature = "zisk"))]
+        #[cfg(all(target_os = "zkvm", feature = "zisk", not(feature = "zisk-sp1")))]
         {
             let proof = ziskos::io::read_slice();
             assert!(verify_zisk_aggchain_proof(
@@ -47,10 +47,30 @@ impl AggchainProof {
                 &_aggchain_proof_public_values.hash(),
             ));
         }
+
+        #[cfg(all(any(target_os = "zkvm", zisk_hints), feature = "zisk-sp1"))]
+        {
+            super::sp1::verify_sp1_aggchain_proof(
+                &ziskos::io::read_slice(),
+                &self.aggchain_vkey,
+                &_aggchain_proof_public_values.hash(),
+            )
+            .expect("invalid SP1 aggchain proof");
+        }
     }
 }
 
-#[cfg(all(target_os = "zkvm", feature = "zisk"))]
+// A native `zisk-sp1` build compiles the SP1 verification out. Fail the build unless
+// the caller opts in explicitly, so a host-side test cannot pass with no proof at all.
+#[cfg(all(
+    feature = "zisk-sp1",
+    not(any(target_os = "zkvm", zisk_hints, feature = "zisk-sp1-unverified-host"))
+))]
+compile_error!(
+    "zisk-sp1 on a host target skips SP1 verification; enable `zisk-sp1-unverified-host` to acknowledge this, or build with --cfg zisk_hints to verify natively"
+);
+
+#[cfg(all(target_os = "zkvm", feature = "zisk", not(feature = "zisk-sp1")))]
 fn verify_zisk_aggchain_proof(
     proof: &[u8],
     expected_program_vk: &Vkey,

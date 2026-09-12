@@ -28,6 +28,17 @@ impl Signature {
                 be_bytes_to_u64_4, ecdsa_recover_secp256k1, keccak256, u64_4_to_be_bytes,
             };
 
+            #[cfg(zisk_hints)]
+            unsafe {
+                let signature = self.as_bytes();
+                let recid = u64::from(self.v()).to_le_bytes();
+                ziskos::hints::hint_secp256k1_ecrecover(
+                    signature.as_ptr(),
+                    recid.as_ptr(),
+                    prehash.as_ptr(),
+                );
+            }
+
             let r = be_bytes_to_u64_4(&self.r().to_be_bytes::<32>());
             let s = be_bytes_to_u64_4(&self.s().to_be_bytes::<32>());
             let z = be_bytes_to_u64_4(prehash.as_ref());
@@ -39,6 +50,10 @@ impl Signature {
                 .copy_from_slice(&u64_4_to_be_bytes(&public_key[..4].try_into().unwrap()));
             uncompressed[32..]
                 .copy_from_slice(&u64_4_to_be_bytes(&public_key[4..].try_into().unwrap()));
+            #[cfg(zisk_hints)]
+            unsafe {
+                ziskos::hints::hint_keccak256(uncompressed.as_ptr(), uncompressed.len());
+            }
             let hash = keccak256(&uncompressed);
             return Ok(Address::new(hash[12..].try_into().unwrap()));
         }
